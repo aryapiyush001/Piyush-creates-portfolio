@@ -764,7 +764,6 @@ em{ color: var(--gold); font-style: italic; }
   color: #171310;
   transform: scale(1.06);
 }
-.video-modal.direct-player-active .video-modal-close{ display: none; }
 body.modal-open{
   overflow: hidden;
 }
@@ -777,6 +776,16 @@ body.modal-open{
     max-width: none;
     aspect-ratio: auto;
     border-radius: 0;
+  }
+  /* The close button lives inside .video-modal, so it rides along
+     whenever the modal itself is the element that goes fullscreen —
+     stacking a custom "×" on top of the player's own controls. Once
+     real fullscreen is engaged there's already a native way out
+     (swipe down / back gesture), so hide the custom button and let
+     the video play through untouched, just like the intro video. */
+  .video-modal:fullscreen .video-modal-close,
+  .video-modal:-webkit-full-screen .video-modal-close{
+    display: none;
   }
 }
 

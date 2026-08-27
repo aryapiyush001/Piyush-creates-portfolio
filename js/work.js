@@ -219,7 +219,6 @@ function openVideoModal(videoId) {
 
   videoModalBody.innerHTML = '';
   videoModal.classList.remove('pseudo-fullscreen');
-  videoModal.classList.remove('direct-player-active');
   let loadingEl = null;
 
   function showLoading() {
@@ -235,7 +234,6 @@ function openVideoModal(videoId) {
 
   function fallbackToIframe() {
     if (source.type !== 'drive') return; // nothing else to fall back to for local files
-    if (isSmallScreen()) return; // keep small screens on the clean native player
     hideLoading();
     videoModalBody.innerHTML = '';
     videoModalBody.appendChild(buildIframePlayer(driveEmbedUrl(source.id)));
@@ -278,8 +276,9 @@ function openVideoModal(videoId) {
   });
 
   videoModalBody.appendChild(vid);
-  if (source.type === 'drive' && !isSmallScreen()) showLoading();
+  if (source.type === 'drive') showLoading();
   vid.src = source.type === 'local' ? source.src : driveDirectStreamUrl(source.id);
+  videoModalBody.appendChild(vid);
 
   lastFocusedEl = document.activeElement;
   videoModalOverlay.classList.add('open');
@@ -290,7 +289,6 @@ function openVideoModal(videoId) {
   // On phones, jump straight to a full, edge-to-edge player in one tap —
   // no hunting for a fullscreen icon inside a cramped embedded player.
   if (isSmallScreen()) {
-    videoModal.classList.add('direct-player-active');
     goFullscreen(videoModal, vid, { preferVideo: true });
   }
 
@@ -303,15 +301,34 @@ function closeVideoModal() {
   videoModalOverlay.classList.remove('open');
   videoModalOverlay.setAttribute('aria-hidden', 'true');
   document.body.classList.remove('modal-open');
-  videoModal.classList.remove('direct-player-active');
   videoModalBody.innerHTML = ''; // fully removes iframe/video so playback stops
   exitPseudoFullscreen(videoModal);
-  if (document.fullscreenElement === videoModal || document.webkitFullscreenElement === videoModal) {
+  videoModalClose.style.display = '';
+  const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+  if (fsEl && videoModal.contains(fsEl)) {
     if (document.exitFullscreen) document.exitFullscreen().catch(() => { });
     else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
   }
   if (lastFocusedEl) lastFocusedEl.focus();
 }
+
+// Keeps the custom close button from stacking on top of a real fullscreen
+// player, and treats swiping/backing out of native fullscreen as closing
+// the video entirely — matching the simple, single-player feel of the
+// intro video instead of leaving an orphaned modal behind it.
+function handleModalFullscreenChange() {
+  if (!videoModalOverlay.classList.contains('open')) return;
+  const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+  const inNativeFullscreen = !!fsEl && videoModal.contains(fsEl);
+
+  videoModalClose.style.display = (isSmallScreen() && inNativeFullscreen) ? 'none' : '';
+
+  if (!inNativeFullscreen && isSmallScreen()) {
+    closeVideoModal();
+  }
+}
+document.addEventListener('fullscreenchange', handleModalFullscreenChange);
+document.addEventListener('webkitfullscreenchange', handleModalFullscreenChange);
 
 document.querySelectorAll('.work-thumb[data-video-id]').forEach(thumb => {
   thumb.addEventListener('click', () => openVideoModal(thumb.dataset.videoId));
