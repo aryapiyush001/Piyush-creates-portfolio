@@ -380,7 +380,7 @@ em{ color: var(--gold); font-style: italic; }
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   color: #D4AF37;
 }
 .stat-icon svg{
@@ -388,8 +388,8 @@ em{ color: var(--gold); font-style: italic; }
   height: 28px;
   display: block;
 }
-.stat-num{ font-family: var(--font-display); font-size: 42px; font-weight:600; }
-.stat-label{ font-size: var(--font-size-subheading); margin: 10px 0 8px; color: var(--text); }
+.stat-num{ font-family: var(--font-display); font-size: 42px; font-weight:600; line-height: 1.05; }
+.stat-label{ font-size: var(--font-size-subheading); margin: 4px 0 14px; color: var(--text); }
 .stat-desc{ font-size: var(--font-size-subheading); color: var(--text-mute); margin:0; line-height:1.5; }
 
 /* =========================================================
@@ -487,7 +487,7 @@ em{ color: var(--gold); font-style: italic; }
 .brand-more{
   color: var(--gold-soft);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: var(--font-size-subheading);
   letter-spacing: 2px;
   height: auto;
   opacity: 0.85;
@@ -1081,12 +1081,13 @@ body.resizing .main-nav{ transition: none !important; }
   .stat-icon{ margin-bottom: 8px; }
   .stat-icon svg{ width: 22px; height: 22px; }
   .stat-num{ font-size: 28px; }
-  .stat-label{ margin: 6px 0 4px; }
+  .stat-label{ margin: 4px 0 10px; }
   .stat-desc{ line-height: 1.35; }
   .brands{ padding: 12px 0 44px; }
   .section-divider{ gap: 10px; margin-bottom: 28px; }
   .section-divider span{ width: 32px; }
   .section-divider p{ font-size: 11px; letter-spacing: 1.5px; }
+  .brand-more{ font-size: 11px; }
   .brands-grid{ grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px 8px; }
   .brand{ height: 42px; max-width: 90px; }
   .brand img{ max-height: 32px; }
