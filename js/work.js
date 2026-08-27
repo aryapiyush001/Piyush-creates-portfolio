@@ -148,7 +148,7 @@ function openVideoModal(videoId) {
   if (source.type === 'drive') {
     const iframe = document.createElement('iframe');
     iframe.src = `https://drive.google.com/file/d/${source.id}/preview`;
-    iframe.allow = 'autoplay';
+    iframe.allow = 'autoplay; fullscreen';
     iframe.allowFullscreen = true;
     videoModalBody.appendChild(iframe);
   } else if (source.type === 'local') {

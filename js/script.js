@@ -69,14 +69,16 @@ if (watchShowreelBtn && showreelVideo && showreelFrame) {
       // Make sure the video has sound available
       showreelVideo.muted = false;
 
-      // Enter fullscreen first
-      if (showreelFrame.requestFullscreen) {
+      // Mobile Safari only supports native fullscreen on the video element.
+      if (showreelVideo.webkitEnterFullscreen) {
+        showreelVideo.webkitEnterFullscreen();
+      } else if (showreelFrame.requestFullscreen) {
         await showreelFrame.requestFullscreen();
       } else if (showreelFrame.webkitRequestFullscreen) {
         showreelFrame.webkitRequestFullscreen();
       }
 
-      // Play the portfolio intro
+      // Play the portfolio intro after fullscreen has been requested.
       await showreelVideo.play();
 
       // Update the player UI
@@ -685,7 +687,7 @@ function openVideoModal(videoId) {
   if (source.type === 'drive') {
     const iframe = document.createElement('iframe');
     iframe.src = `https://drive.google.com/file/d/${source.id}/preview`;
-    iframe.allow = 'autoplay';
+    iframe.allow = 'autoplay; fullscreen';
     iframe.allowFullscreen = true;
     videoModalBody.appendChild(iframe);
   } else if (source.type === 'local') {
