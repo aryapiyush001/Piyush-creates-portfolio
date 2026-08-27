@@ -740,9 +740,11 @@ const videoModalClose = document.getElementById('video-modal-close');
 const videoModal = videoModalOverlay.querySelector('.video-modal');
 let lastFocusedEl = null;
 
-// Give Drive's direct-stream link a few seconds to prove it plays before
-// giving up and dropping back to Drive's own (cluttered) embedded player.
-const VIDEO_LOAD_TIMEOUT = 4500;
+// Give Drive's direct-stream link a generous window to prove it plays.
+// A slow mobile connection just buffering is not the same as Drive
+// blocking the file — bailing out too early lands the person in
+// Drive's own cluttered embedded player for no good reason.
+const VIDEO_LOAD_TIMEOUT = 9000;
 
 function driveEmbedUrl(fileId) {
   return `https://drive.google.com/file/d/${fileId}/preview`;
@@ -763,9 +765,22 @@ function openVideoModal(videoId) {
   videoModalBody.innerHTML = '';
   videoModal.classList.remove('pseudo-fullscreen');
   let activeVideo = null;
+  let loadingEl = null;
+
+  function showLoading() {
+    if (loadingEl) return;
+    loadingEl = document.createElement('div');
+    loadingEl.className = 'video-modal-loading';
+    loadingEl.innerHTML = '<div class="spinner"></div>';
+    videoModalBody.appendChild(loadingEl);
+  }
+  function hideLoading() {
+    if (loadingEl) { loadingEl.remove(); loadingEl = null; }
+  }
 
   function fallbackToIframe() {
     if (source.type !== 'drive') return; // nothing else to fall back to for local files
+    hideLoading();
     videoModalBody.innerHTML = '';
     videoModalBody.appendChild(buildIframePlayer(driveEmbedUrl(source.id)));
     if (isSmallScreen() && !document.fullscreenElement && !document.webkitFullscreenElement) {
@@ -775,7 +790,7 @@ function openVideoModal(videoId) {
 
   // Always try a real, self-controlled <video> first — it's the clean,
   // single-tap experience. Only Drive's own boxed-in embed (with its extra
-  // toolbar/controls) is used as a last resort if that fails to load.
+  // toolbar/controls) is used as a last resort if that genuinely fails.
   const vid = document.createElement('video');
   vid.controls = true;
   vid.autoplay = true;
@@ -787,10 +802,18 @@ function openVideoModal(videoId) {
     ? setTimeout(() => { if (!settled) { settled = true; fallbackToIframe(); } }, VIDEO_LOAD_TIMEOUT)
     : null;
 
-  vid.addEventListener('loadeddata', () => {
+  function markPlayable() {
+    if (settled) return;
     settled = true;
     if (timer) clearTimeout(timer);
-  });
+    hideLoading();
+  }
+
+  // Any of these mean the direct stream is actually working — don't wait
+  // for all of them, the first one is enough to cancel the fallback timer.
+  vid.addEventListener('loadeddata', markPlayable);
+  vid.addEventListener('canplay', markPlayable);
+  vid.addEventListener('playing', markPlayable);
   vid.addEventListener('error', () => {
     if (settled) return;
     settled = true;
@@ -798,8 +821,9 @@ function openVideoModal(videoId) {
     fallbackToIframe();
   });
 
-  vid.src = source.type === 'local' ? source.src : driveDirectStreamUrl(source.id);
   videoModalBody.appendChild(vid);
+  if (source.type === 'drive') showLoading();
+  vid.src = source.type === 'local' ? source.src : driveDirectStreamUrl(source.id);
   activeVideo = vid;
 
   lastFocusedEl = document.activeElement;

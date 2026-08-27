@@ -687,6 +687,27 @@ em{ color: var(--gold); font-style: italic; }
 .video-modal-body{
   width: 100%;
   height: 100%;
+  position: relative;
+}
+.video-modal-loading{
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+.video-modal-loading .spinner{
+  width: 34px;
+  height: 34px;
+  border: 3px solid rgba(255,255,255,0.25);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: video-modal-spin .8s linear infinite;
+}
+@keyframes video-modal-spin{
+  to{ transform: rotate(360deg); }
 }
 .video-modal-body video,
 .video-modal-body iframe{
