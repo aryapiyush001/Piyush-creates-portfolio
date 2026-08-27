@@ -1344,6 +1344,13 @@ body.resizing .main-nav{ transition: none !important; }
   color: var(--text-mute);
   margin-bottom: 22px;
 }
+.allwork-crumb .back-btn{
+  position: static;
+  width: 22px;
+  height: 22px;
+  margin: 0 2px 0 -4px;
+}
+.allwork-crumb .back-btn:hover{ transform: translateX(-3px); }
 .allwork-crumb a{
   color: var(--text-dim);
   transition: color .2s ease;

@@ -143,6 +143,7 @@ function exitPseudoFullscreen(containerEl) {
 }
 
 const isSmallScreen = () => window.matchMedia('(max-width: 700px)').matches;
+const isAndroid = /Android/i.test(navigator.userAgent);
 
 const supportsHoverPreview = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
@@ -220,6 +221,16 @@ function openVideoModal(videoId) {
   videoModalBody.innerHTML = '';
   videoModal.classList.remove('pseudo-fullscreen');
   let loadingEl = null;
+
+  if (source.type === 'drive' && isAndroid) {
+    videoModalBody.appendChild(buildIframePlayer(driveEmbedUrl(source.id)));
+    lastFocusedEl = document.activeElement;
+    videoModalOverlay.classList.add('open');
+    videoModalOverlay.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-open');
+    videoModalClose.focus();
+    return;
+  }
 
   function showLoading() {
     if (loadingEl) return;
