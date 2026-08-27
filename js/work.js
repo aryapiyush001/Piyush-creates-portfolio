@@ -195,6 +195,15 @@ const videoModalBody = document.getElementById('video-modal-body');
 const videoModalClose = document.getElementById('video-modal-close');
 const videoModal = videoModalOverlay.querySelector('.video-modal');
 let lastFocusedEl = null;
+let modalSession = { generation: 0, timer: null, video: null };
+
+function invalidateModalSession() {
+  modalSession.generation += 1;
+  if (modalSession.timer) clearTimeout(modalSession.timer);
+  if (modalSession.video) modalSession.video.pause();
+  modalSession.timer = null;
+  modalSession.video = null;
+}
 
 // Give Drive's direct-stream link a generous window to prove it plays.
 // A slow mobile connection just buffering is not the same as Drive
@@ -218,8 +227,10 @@ function openVideoModal(videoId) {
   const source = VIDEO_SOURCES[videoId];
   if (!source) return;
 
+  invalidateModalSession();
   videoModalBody.innerHTML = '';
   videoModal.classList.remove('pseudo-fullscreen');
+  const generation = modalSession.generation;
   let loadingEl = null;
 
   if (source.type === 'drive' && isAndroid) {
@@ -244,7 +255,7 @@ function openVideoModal(videoId) {
   }
 
   function fallbackToIframe() {
-    if (source.type !== 'drive') return; // nothing else to fall back to for local files
+    if (source.type !== 'drive' || generation !== modalSession.generation || !videoModalOverlay.classList.contains('open')) return;
     hideLoading();
     videoModalBody.innerHTML = '';
     videoModalBody.appendChild(buildIframePlayer(driveEmbedUrl(source.id)));
@@ -264,8 +275,9 @@ function openVideoModal(videoId) {
 
   let settled = false;
   const timer = source.type === 'drive'
-    ? setTimeout(() => { if (!settled) { settled = true; fallbackToIframe(); } }, VIDEO_LOAD_TIMEOUT)
+    ? setTimeout(() => { if (!settled && generation === modalSession.generation) { settled = true; fallbackToIframe(); } }, VIDEO_LOAD_TIMEOUT)
     : null;
+  modalSession.timer = timer;
 
   function markPlayable() {
     if (settled) return;
@@ -280,15 +292,20 @@ function openVideoModal(videoId) {
   vid.addEventListener('canplay', markPlayable);
   vid.addEventListener('playing', markPlayable);
   vid.addEventListener('error', () => {
-    if (settled) return;
+    if (settled || generation !== modalSession.generation) return;
     settled = true;
     if (timer) clearTimeout(timer);
-    fallbackToIframe();
+    if (source.type === 'drive') {
+      fallbackToIframe();
+    } else {
+      videoModalBody.innerHTML = '<p class="video-modal-error">This video could not be loaded. Please try again.</p>';
+    }
   });
 
   videoModalBody.appendChild(vid);
   if (source.type === 'drive') showLoading();
   vid.src = source.type === 'local' ? source.src : driveDirectStreamUrl(source.id);
+  modalSession.video = vid;
   videoModalBody.appendChild(vid);
 
   lastFocusedEl = document.activeElement;
@@ -300,7 +317,11 @@ function openVideoModal(videoId) {
   // On phones, jump straight to a full, edge-to-edge player in one tap —
   // no hunting for a fullscreen icon inside a cramped embedded player.
   if (isSmallScreen()) {
-    goFullscreen(videoModal, vid, { preferVideo: true });
+    goFullscreen(videoModal, vid, { preferVideo: true }).then(() => {
+      if (generation !== modalSession.generation || !videoModalOverlay.classList.contains('open')) {
+        exitPseudoFullscreen(videoModal);
+      }
+    }).catch(() => { });
   }
 
   vid.play().catch(() => {
@@ -309,6 +330,7 @@ function openVideoModal(videoId) {
 }
 
 function closeVideoModal() {
+  invalidateModalSession();
   videoModalOverlay.classList.remove('open');
   videoModalOverlay.setAttribute('aria-hidden', 'true');
   document.body.classList.remove('modal-open');

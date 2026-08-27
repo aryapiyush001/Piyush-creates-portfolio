@@ -5,10 +5,17 @@ document.getElementById('footer-year').textContent = new Date().getFullYear();
 const brandsGrid = document.getElementById('brands-grid');
 const brandsMore = document.getElementById('brands-more');
 if (brandsMore && brandsGrid) {
-  brandsMore.addEventListener('click', () => {
-    const expanded = brandsGrid.classList.toggle('is-expanded');
+  function setBrandsExpanded(expanded) {
+    brandsGrid.classList.toggle('is-expanded', expanded);
     brandsMore.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-    brandsMore.textContent = expanded ? '− LESS' : '+ MORE';
+    brandsMore.textContent = expanded ? '- LESS' : '+ MORE';
+  }
+
+  setBrandsExpanded(SiteState.get('brandsExpanded', false));
+  brandsMore.addEventListener('click', () => {
+    const expanded = !brandsGrid.classList.contains('is-expanded');
+    setBrandsExpanded(expanded);
+    SiteState.set('brandsExpanded', expanded, { persist: true });
   });
 }
 
@@ -177,6 +184,7 @@ function updateActiveNav() {
 
 window.addEventListener('scroll', updateActiveNav, { passive: true });
 window.addEventListener('load', updateActiveNav);
+window.addEventListener('pageshow', () => SiteState.restoreHomePosition());
 
 // =========================================================
 // HERO: fade-in-up on page load
@@ -407,6 +415,11 @@ contactFields.forEach((field) => {
   field.addEventListener('input', updateFieldState);
   field.addEventListener('change', updateFieldState);
 
+  field.value = SiteState.get(`contact.${field.name}`, '');
+  field.addEventListener('input', () => {
+    SiteState.set(`contact.${field.name}`, field.value, { persist: true });
+  });
+
   updateFieldState();
 });
 
@@ -597,6 +610,7 @@ contactForm.addEventListener('submit', (e) => {
 
         field.value = '';
         field.classList.remove('has-value');
+        SiteState.clear(`contact.${field.name}`, { persist: true });
       });
 
 
@@ -740,6 +754,15 @@ const videoModalBody = document.getElementById('video-modal-body');
 const videoModalClose = document.getElementById('video-modal-close');
 const videoModal = videoModalOverlay.querySelector('.video-modal');
 let lastFocusedEl = null;
+let modalSession = { generation: 0, timer: null, video: null };
+
+function invalidateModalSession() {
+  modalSession.generation += 1;
+  if (modalSession.timer) clearTimeout(modalSession.timer);
+  if (modalSession.video) modalSession.video.pause();
+  modalSession.timer = null;
+  modalSession.video = null;
+}
 
 // Give Drive's direct-stream link a generous window to prove it plays.
 // A slow mobile connection just buffering is not the same as Drive
@@ -763,8 +786,10 @@ function openVideoModal(videoId) {
   const source = VIDEO_SOURCES[videoId];
   if (!source) return;
 
+  invalidateModalSession();
   videoModalBody.innerHTML = '';
   videoModal.classList.remove('pseudo-fullscreen');
+  const generation = modalSession.generation;
   let activeVideo = null;
   let loadingEl = null;
 
@@ -790,7 +815,7 @@ function openVideoModal(videoId) {
   }
 
   function fallbackToIframe() {
-    if (source.type !== 'drive') return; // nothing else to fall back to for local files
+    if (source.type !== 'drive' || generation !== modalSession.generation || !videoModalOverlay.classList.contains('open')) return;
     hideLoading();
     videoModalBody.innerHTML = '';
     videoModalBody.appendChild(buildIframePlayer(driveEmbedUrl(source.id)));
@@ -810,8 +835,9 @@ function openVideoModal(videoId) {
 
   let settled = false;
   const timer = source.type === 'drive'
-    ? setTimeout(() => { if (!settled) { settled = true; fallbackToIframe(); } }, VIDEO_LOAD_TIMEOUT)
+    ? setTimeout(() => { if (!settled && generation === modalSession.generation) { settled = true; fallbackToIframe(); } }, VIDEO_LOAD_TIMEOUT)
     : null;
+  modalSession.timer = timer;
 
   function markPlayable() {
     if (settled) return;
@@ -826,16 +852,21 @@ function openVideoModal(videoId) {
   vid.addEventListener('canplay', markPlayable);
   vid.addEventListener('playing', markPlayable);
   vid.addEventListener('error', () => {
-    if (settled) return;
+    if (settled || generation !== modalSession.generation) return;
     settled = true;
     if (timer) clearTimeout(timer);
-    fallbackToIframe();
+    if (source.type === 'drive') {
+      fallbackToIframe();
+    } else {
+      videoModalBody.innerHTML = '<p class="video-modal-error">This video could not be loaded. Please try again.</p>';
+    }
   });
 
   videoModalBody.appendChild(vid);
   if (source.type === 'drive') showLoading();
   vid.src = source.type === 'local' ? source.src : driveDirectStreamUrl(source.id);
   activeVideo = vid;
+  modalSession.video = vid;
 
   lastFocusedEl = document.activeElement;
   videoModalOverlay.classList.add('open');
@@ -846,7 +877,11 @@ function openVideoModal(videoId) {
   // On phones, jump straight to a full, edge-to-edge player in one tap —
   // no hunting for a fullscreen icon inside a cramped embedded player.
   if (isSmallScreen()) {
-    goFullscreen(videoModal, activeVideo, { preferVideo: true });
+    goFullscreen(videoModal, activeVideo, { preferVideo: true }).then(() => {
+      if (generation !== modalSession.generation || !videoModalOverlay.classList.contains('open')) {
+        exitPseudoFullscreen(videoModal);
+      }
+    }).catch(() => { });
   }
 
   activeVideo.play().catch(() => {
@@ -855,6 +890,7 @@ function openVideoModal(videoId) {
 }
 
 function closeVideoModal() {
+  invalidateModalSession();
   videoModalOverlay.classList.remove('open');
   videoModalOverlay.setAttribute('aria-hidden', 'true');
   document.body.classList.remove('modal-open');

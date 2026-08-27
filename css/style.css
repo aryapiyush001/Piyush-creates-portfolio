@@ -725,6 +725,15 @@ em{ color: var(--gold); font-style: italic; }
 .video-modal-body video:-webkit-full-screen{
   object-fit: contain;
 }
+.video-modal-error{
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: rgba(255,255,255,0.75);
+  text-align: center;
+}
 .video-modal:fullscreen,
 .video-modal:-webkit-full-screen,
 .video-modal.pseudo-fullscreen{
