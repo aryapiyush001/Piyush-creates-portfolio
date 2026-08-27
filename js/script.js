@@ -69,17 +69,11 @@ if (watchShowreelBtn && showreelVideo && showreelFrame) {
       // Make sure the video has sound available
       showreelVideo.muted = false;
 
-      // iOS uses native video fullscreen; other mobile browsers support the
-      // standard fullscreen API on the player frame.
-      const isAppleMobile = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
-      if (isAppleMobile && showreelVideo.webkitEnterFullscreen) {
+      // Mobile Safari only supports native fullscreen on the video element.
+      if (showreelVideo.webkitEnterFullscreen) {
         showreelVideo.webkitEnterFullscreen();
       } else if (showreelFrame.requestFullscreen) {
         await showreelFrame.requestFullscreen();
-      } else if (showreelVideo.requestFullscreen) {
-        await showreelVideo.requestFullscreen();
       } else if (showreelFrame.webkitRequestFullscreen) {
         showreelFrame.webkitRequestFullscreen();
       }
@@ -689,23 +683,13 @@ function openVideoModal(videoId) {
 
   videoModalBody.innerHTML = '';
   let localVideo = null;
-  let nativeDriveVideo = null;
 
   if (source.type === 'drive') {
-    if (window.matchMedia('(max-width: 700px)').matches) {
-      nativeDriveVideo = document.createElement('video');
-      nativeDriveVideo.src = `https://drive.google.com/uc?export=download&id=${source.id}`;
-      nativeDriveVideo.controls = true;
-      nativeDriveVideo.autoplay = true;
-      nativeDriveVideo.playsInline = false;
-      videoModalBody.appendChild(nativeDriveVideo);
-    } else {
-      const iframe = document.createElement('iframe');
-      iframe.src = `https://drive.google.com/file/d/${source.id}/preview`;
-      iframe.allow = 'autoplay; fullscreen';
-      iframe.allowFullscreen = true;
-      videoModalBody.appendChild(iframe);
-    }
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://drive.google.com/file/d/${source.id}/preview`;
+    iframe.allow = 'autoplay; fullscreen';
+    iframe.allowFullscreen = true;
+    videoModalBody.appendChild(iframe);
   } else if (source.type === 'local') {
     const vid = document.createElement('video');
     vid.src = source.src;
@@ -725,16 +709,6 @@ function openVideoModal(videoId) {
   if (localVideo) {
     const fullscreenRequest = localVideo.requestFullscreen ? localVideo.requestFullscreen() :
       (localVideo.webkitEnterFullscreen ? localVideo.webkitEnterFullscreen() : null);
-    if (fullscreenRequest && typeof fullscreenRequest.catch === 'function') {
-      fullscreenRequest.catch(() => { });
-    }
-  }
-
-  if (nativeDriveVideo) {
-    const fullscreenRequest = nativeDriveVideo.webkitEnterFullscreen ?
-      nativeDriveVideo.webkitEnterFullscreen() :
-      (nativeDriveVideo.requestFullscreen ? nativeDriveVideo.requestFullscreen() : null);
-    nativeDriveVideo.play().catch(() => { });
     if (fullscreenRequest && typeof fullscreenRequest.catch === 'function') {
       fullscreenRequest.catch(() => { });
     }
