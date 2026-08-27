@@ -3,7 +3,8 @@
   --bg: #0b0b0c;
   --bg-alt: #111113;
   --bg-panel: #17171a;
-  --border: rgba(255,255,255,0.08);
+  --border: #29292c;
+  --divider: #38383c;
   --text: #f2f0ea;
   --text-dim: #b9b6ae;
   --text-mute: #7d7a74;
@@ -106,7 +107,7 @@ em{ color: var(--gold); font-style: italic; }
   background: var(--surface-translucent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--divider);
   padding: 10px 0;
 }
 .header-inner{
@@ -414,7 +415,7 @@ em{ color: var(--gold); font-style: italic; }
   justify-content:center;
   margin-bottom: 60px;
 }
-.section-divider span{ width:60px; height:1px; background: var(--border); }
+.section-divider span{ width:60px; height:1px; background: var(--divider); }
 .section-divider p{
   margin:0; font-size:14px; letter-spacing:3px; text-transform:uppercase; color: var(--gold-soft);
 }
@@ -534,7 +535,7 @@ em{ color: var(--gold); font-style: italic; }
 /* =========================================================
    BEST WORK
    ========================================================= */
-.best-work{ padding: 60px 0 110px; border-top: 1px solid var(--border); }
+.best-work{ padding: 60px 0 110px; border-top: 1px solid var(--divider); }
 .section-head{
   display:flex; align-items:flex-end; justify-content:space-between;
   padding-bottom: 28px;
@@ -792,14 +793,14 @@ body.modal-open{
 /* =========================================================
    BOTTOM GRID: About + What I Do
    ========================================================= */
-.bottom-grid{ padding: 60px 0 50px; border-top: 1px solid var(--border); }
+.bottom-grid{ padding: 60px 0 50px; border-top: 1px solid var(--divider); }
 
 /* =========================================================
    CONTACT SECTION
    ========================================================= */
 .contact-section{
   padding: 70px 0 90px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--divider);
 }
 .contact-section .section-divider{
   margin-bottom: 40px;
@@ -983,7 +984,7 @@ body.modal-open{
    FOOTER
    ========================================================= */
 .site-footer{
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--divider);
   padding: 26px 0;
   margin-top: 60px;
 }
@@ -1319,7 +1320,7 @@ body.resizing .main-nav{ transition: none !important; }
 .allwork-hero{
   position: relative;
   padding: 96px 0 56px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--divider);
   overflow: hidden;
 }
 .allwork-hero-bg{
@@ -1384,7 +1385,7 @@ body.resizing .main-nav{ transition: none !important; }
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--divider);
   padding-bottom: 22px;
   margin-bottom: 32px;
 }
@@ -1465,7 +1466,7 @@ body.resizing .main-nav{ transition: none !important; }
 .more-work-cta{
   text-align: center;
   padding: 50px 20px 10px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--divider);
   margin-top: 10px;
 }
 .more-work-text{
