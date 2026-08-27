@@ -764,6 +764,7 @@ function openVideoModal(videoId) {
 
   videoModalBody.innerHTML = '';
   videoModal.classList.remove('pseudo-fullscreen');
+  videoModal.classList.remove('direct-player-active');
   let activeVideo = null;
   let loadingEl = null;
 
@@ -780,6 +781,7 @@ function openVideoModal(videoId) {
 
   function fallbackToIframe() {
     if (source.type !== 'drive') return; // nothing else to fall back to for local files
+    if (isSmallScreen()) return; // keep small screens on the clean native player
     hideLoading();
     videoModalBody.innerHTML = '';
     videoModalBody.appendChild(buildIframePlayer(driveEmbedUrl(source.id)));
@@ -822,7 +824,7 @@ function openVideoModal(videoId) {
   });
 
   videoModalBody.appendChild(vid);
-  if (source.type === 'drive') showLoading();
+  if (source.type === 'drive' && !isSmallScreen()) showLoading();
   vid.src = source.type === 'local' ? source.src : driveDirectStreamUrl(source.id);
   activeVideo = vid;
 
@@ -835,6 +837,7 @@ function openVideoModal(videoId) {
   // On phones, jump straight to a full, edge-to-edge player in one tap —
   // no hunting for a fullscreen icon inside a cramped embedded player.
   if (isSmallScreen()) {
+    videoModal.classList.add('direct-player-active');
     goFullscreen(videoModal, activeVideo, { preferVideo: true });
   }
 
@@ -847,6 +850,7 @@ function closeVideoModal() {
   videoModalOverlay.classList.remove('open');
   videoModalOverlay.setAttribute('aria-hidden', 'true');
   document.body.classList.remove('modal-open');
+  videoModal.classList.remove('direct-player-active');
   videoModalBody.innerHTML = '';
   exitPseudoFullscreen(videoModal);
   if (document.fullscreenElement === videoModal || document.webkitFullscreenElement === videoModal) {

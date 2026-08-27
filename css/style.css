@@ -764,6 +764,7 @@ em{ color: var(--gold); font-style: italic; }
   color: #171310;
   transform: scale(1.06);
 }
+.video-modal.direct-player-active .video-modal-close{ display: none; }
 body.modal-open{
   overflow: hidden;
 }
