@@ -1131,6 +1131,8 @@ body.resizing .main-nav{ transition: none !important; }
   .about-photo{ max-width: 280px; }
   .about-layout .whatido-col{ padding: 20px 18px 28px; }
   .contact-col{ max-width: 100%; }
+  .contact-form input,
+  .contact-form textarea{ font-size: 16px; }
 }
 
 @media (max-width: 480px){

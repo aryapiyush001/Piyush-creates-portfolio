@@ -137,7 +137,6 @@ function setupHoverPreview(thumbEl) {
 const videoModalOverlay = document.getElementById('video-modal-overlay');
 const videoModalBody = document.getElementById('video-modal-body');
 const videoModalClose = document.getElementById('video-modal-close');
-const isSmallVideoDevice = window.matchMedia('(max-width: 700px)').matches;
 let lastFocusedEl = null;
 
 function openVideoModal(videoId) {
@@ -145,23 +144,13 @@ function openVideoModal(videoId) {
   if (!source) return;
 
   videoModalBody.innerHTML = '';
-  let localVideo = null;
 
   if (source.type === 'drive') {
-    if (isSmallVideoDevice) {
-      localVideo = document.createElement('video');
-      localVideo.src = `https://drive.google.com/uc?export=download&id=${source.id}`;
-      localVideo.controls = true;
-      localVideo.autoplay = true;
-      localVideo.playsInline = false;
-      videoModalBody.appendChild(localVideo);
-    } else {
-      const iframe = document.createElement('iframe');
-      iframe.src = `https://drive.google.com/file/d/${source.id}/preview`;
-      iframe.allow = 'autoplay; fullscreen';
-      iframe.allowFullscreen = true;
-      videoModalBody.appendChild(iframe);
-    }
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://drive.google.com/file/d/${source.id}/preview`;
+    iframe.allow = 'autoplay; fullscreen';
+    iframe.allowFullscreen = true;
+    videoModalBody.appendChild(iframe);
   } else if (source.type === 'local') {
     const vid = document.createElement('video');
     vid.src = source.src;
@@ -169,7 +158,6 @@ function openVideoModal(videoId) {
     vid.autoplay = true;
     vid.playsInline = true;
     videoModalBody.appendChild(vid);
-    localVideo = vid;
   }
 
   lastFocusedEl = document.activeElement;
@@ -177,14 +165,6 @@ function openVideoModal(videoId) {
   videoModalOverlay.setAttribute('aria-hidden', 'false');
   document.body.classList.add('modal-open');
   videoModalClose.focus();
-
-  if (localVideo && isSmallVideoDevice) {
-    const fullscreenRequest = localVideo.webkitEnterFullscreen ? localVideo.webkitEnterFullscreen() :
-      (localVideo.requestFullscreen ? localVideo.requestFullscreen() : null);
-    if (fullscreenRequest && typeof fullscreenRequest.catch === 'function') {
-      fullscreenRequest.catch(() => { });
-    }
-  }
 }
 
 function closeVideoModal() {
