@@ -50,6 +50,63 @@ window.addEventListener('resize', () => {
 });
 
 // =========================================================
+// UNIVERSAL FULLSCREEN HELPER
+// Used by the showreel and by every video modal on the site.
+//
+// Mobile browsers don't agree on one fullscreen API, and some
+// (in-app browsers like Instagram/Facebook, some Android
+// WebViews) block the Fullscreen API entirely. Rather than
+// picking one method and silently failing, this tries each in
+// turn and always lands somewhere that actually fills the
+// screen:
+//   1) Real Fullscreen API on the requested element
+//   2) iOS Safari's video-only native fullscreen
+//   3) A CSS-only "pseudo fullscreen" (fixed, 100vw/100dvh)
+//      that works everywhere, even where the API is blocked.
+// =========================================================
+function requestNativeFullscreen(el) {
+  if (!el) return Promise.resolve(false);
+  const fn = el.requestFullscreen || el.webkitRequestFullscreen;
+  if (!fn) return Promise.resolve(false);
+  try {
+    return Promise.resolve(fn.call(el)).then(() => true).catch(() => false);
+  } catch (e) {
+    return Promise.resolve(false);
+  }
+}
+
+async function goFullscreen(containerEl, videoEl, { preferVideo = false } = {}) {
+  const tryVideoNative = async () => {
+    if (!videoEl) return false;
+    if (videoEl.webkitEnterFullscreen) {
+      try { videoEl.webkitEnterFullscreen(); return true; } catch (e) { /* fall through */ }
+    }
+    return requestNativeFullscreen(videoEl);
+  };
+
+  if (preferVideo) {
+    if (await tryVideoNative()) return 'native';
+    if (await requestNativeFullscreen(containerEl)) return 'native';
+  } else {
+    if (await requestNativeFullscreen(containerEl)) return 'native';
+    if (await tryVideoNative()) return 'native';
+  }
+
+  // Nothing worked (API blocked) — force it visually instead.
+  if (containerEl) {
+    containerEl.classList.add('pseudo-fullscreen');
+    return 'pseudo';
+  }
+  return null;
+}
+
+function exitPseudoFullscreen(containerEl) {
+  if (containerEl) containerEl.classList.remove('pseudo-fullscreen');
+}
+
+const isSmallScreen = () => window.matchMedia('(max-width: 700px)').matches;
+
+// =========================================================
 // SHOWREEL BUTTON
 // Play portfolio intro video in fullscreen
 // =========================================================
@@ -69,14 +126,8 @@ if (watchShowreelBtn && showreelVideo && showreelFrame) {
       // Make sure the video has sound available
       showreelVideo.muted = false;
 
-      // Mobile Safari only supports native fullscreen on the video element.
-      if (showreelVideo.webkitEnterFullscreen) {
-        showreelVideo.webkitEnterFullscreen();
-      } else if (showreelFrame.requestFullscreen) {
-        await showreelFrame.requestFullscreen();
-      } else if (showreelFrame.webkitRequestFullscreen) {
-        showreelFrame.webkitRequestFullscreen();
-      }
+      // Try every fullscreen strategy in one go — one tap, always full.
+      await goFullscreen(showreelFrame, showreelVideo);
 
       // Play the portfolio intro after fullscreen has been requested.
       await showreelVideo.play();
@@ -262,7 +313,8 @@ muteBtn.addEventListener('click', (e) => {
 
 function isFullscreen() {
   return document.fullscreenElement === videoFrame ||
-    document.webkitFullscreenElement === videoFrame;
+    document.webkitFullscreenElement === videoFrame ||
+    videoFrame.classList.contains('pseudo-fullscreen');
 }
 
 function updateFullscreenUI() {
@@ -272,19 +324,29 @@ function updateFullscreenUI() {
   fullscreenBtn.setAttribute('aria-label', fs ? 'Exit fullscreen' : 'Fullscreen');
 }
 
-fullscreenBtn.addEventListener('click', (e) => {
+fullscreenBtn.addEventListener('click', async (e) => {
   e.stopPropagation();
-  if (isFullscreen()) {
+  if (videoFrame.classList.contains('pseudo-fullscreen')) {
+    exitPseudoFullscreen(videoFrame);
+    updateFullscreenUI();
+  } else if (document.fullscreenElement || document.webkitFullscreenElement) {
     if (document.exitFullscreen) document.exitFullscreen();
     else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
   } else {
-    if (videoFrame.requestFullscreen) videoFrame.requestFullscreen();
-    else if (videoFrame.webkitRequestFullscreen) videoFrame.webkitRequestFullscreen();
+    await goFullscreen(videoFrame, video);
+    updateFullscreenUI();
   }
 });
 
 document.addEventListener('fullscreenchange', updateFullscreenUI);
 document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && videoFrame.classList.contains('pseudo-fullscreen')) {
+    exitPseudoFullscreen(videoFrame);
+    updateFullscreenUI();
+  }
+});
 
 let isDragging = false;
 
@@ -675,30 +737,70 @@ document.querySelectorAll('.thumb-img[data-base]').forEach(loadThumbWithFallback
 const videoModalOverlay = document.getElementById('video-modal-overlay');
 const videoModalBody = document.getElementById('video-modal-body');
 const videoModalClose = document.getElementById('video-modal-close');
+const videoModal = videoModalOverlay.querySelector('.video-modal');
 let lastFocusedEl = null;
+
+// Give Drive's direct-stream link a few seconds to prove it plays before
+// giving up and dropping back to Drive's own (cluttered) embedded player.
+const VIDEO_LOAD_TIMEOUT = 4500;
+
+function driveEmbedUrl(fileId) {
+  return `https://drive.google.com/file/d/${fileId}/preview`;
+}
+
+function buildIframePlayer(src) {
+  const iframe = document.createElement('iframe');
+  iframe.src = src;
+  iframe.allow = 'autoplay; fullscreen';
+  iframe.allowFullscreen = true;
+  return iframe;
+}
 
 function openVideoModal(videoId) {
   const source = VIDEO_SOURCES[videoId];
   if (!source) return;
 
   videoModalBody.innerHTML = '';
-  let localVideo = null;
+  videoModal.classList.remove('pseudo-fullscreen');
+  let activeVideo = null;
 
-  if (source.type === 'drive') {
-    const iframe = document.createElement('iframe');
-    iframe.src = `https://drive.google.com/file/d/${source.id}/preview`;
-    iframe.allow = 'autoplay; fullscreen';
-    iframe.allowFullscreen = true;
-    videoModalBody.appendChild(iframe);
-  } else if (source.type === 'local') {
-    const vid = document.createElement('video');
-    vid.src = source.src;
-    vid.controls = true;
-    vid.autoplay = true;
-    vid.playsInline = true;
-    videoModalBody.appendChild(vid);
-    localVideo = vid;
+  function fallbackToIframe() {
+    if (source.type !== 'drive') return; // nothing else to fall back to for local files
+    videoModalBody.innerHTML = '';
+    videoModalBody.appendChild(buildIframePlayer(driveEmbedUrl(source.id)));
+    if (isSmallScreen() && !document.fullscreenElement && !document.webkitFullscreenElement) {
+      goFullscreen(videoModal, null);
+    }
   }
+
+  // Always try a real, self-controlled <video> first — it's the clean,
+  // single-tap experience. Only Drive's own boxed-in embed (with its extra
+  // toolbar/controls) is used as a last resort if that fails to load.
+  const vid = document.createElement('video');
+  vid.controls = true;
+  vid.autoplay = true;
+  vid.playsInline = true;
+  vid.setAttribute('webkit-playsinline', '');
+
+  let settled = false;
+  const timer = source.type === 'drive'
+    ? setTimeout(() => { if (!settled) { settled = true; fallbackToIframe(); } }, VIDEO_LOAD_TIMEOUT)
+    : null;
+
+  vid.addEventListener('loadeddata', () => {
+    settled = true;
+    if (timer) clearTimeout(timer);
+  });
+  vid.addEventListener('error', () => {
+    if (settled) return;
+    settled = true;
+    if (timer) clearTimeout(timer);
+    fallbackToIframe();
+  });
+
+  vid.src = source.type === 'local' ? source.src : driveDirectStreamUrl(source.id);
+  videoModalBody.appendChild(vid);
+  activeVideo = vid;
 
   lastFocusedEl = document.activeElement;
   videoModalOverlay.classList.add('open');
@@ -706,13 +808,15 @@ function openVideoModal(videoId) {
   document.body.classList.add('modal-open');
   videoModalClose.focus();
 
-  if (localVideo) {
-    const fullscreenRequest = localVideo.requestFullscreen ? localVideo.requestFullscreen() :
-      (localVideo.webkitEnterFullscreen ? localVideo.webkitEnterFullscreen() : null);
-    if (fullscreenRequest && typeof fullscreenRequest.catch === 'function') {
-      fullscreenRequest.catch(() => { });
-    }
+  // On phones, jump straight to a full, edge-to-edge player in one tap —
+  // no hunting for a fullscreen icon inside a cramped embedded player.
+  if (isSmallScreen()) {
+    goFullscreen(videoModal, activeVideo, { preferVideo: true });
   }
+
+  activeVideo.play().catch(() => {
+    // Autoplay may be blocked until the person taps — controls still work.
+  });
 }
 
 function closeVideoModal() {
@@ -720,6 +824,11 @@ function closeVideoModal() {
   videoModalOverlay.setAttribute('aria-hidden', 'true');
   document.body.classList.remove('modal-open');
   videoModalBody.innerHTML = '';
+  exitPseudoFullscreen(videoModal);
+  if (document.fullscreenElement === videoModal || document.webkitFullscreenElement === videoModal) {
+    if (document.exitFullscreen) document.exitFullscreen().catch(() => { });
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+  }
   if (lastFocusedEl) lastFocusedEl.focus();
 }
 

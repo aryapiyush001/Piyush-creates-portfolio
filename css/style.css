@@ -292,12 +292,25 @@ em{ color: var(--gold); font-style: italic; }
   background: #000;
 }
 .video-frame:fullscreen,
-.video-frame:-webkit-full-screen{
+.video-frame:-webkit-full-screen,
+.video-frame.pseudo-fullscreen{
   width: 100%;
   height: 100%;
   aspect-ratio: auto;
   border-radius: 0;
   background: #000;
+}
+/* Fallback for browsers/in-app webviews that block the real
+   Fullscreen API outright — fills the viewport with CSS instead. */
+.video-frame.pseudo-fullscreen{
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  z-index: 999;
+}
+.video-frame.pseudo-fullscreen .showreel-video{
+  object-fit: contain;
 }
 .showreel-video{
   position: absolute;
@@ -683,9 +696,28 @@ em{ color: var(--gold); font-style: italic; }
   display: block;
   background: #000;
 }
+.video-modal-body video{
+  object-fit: contain;
+}
 .video-modal-body video:fullscreen,
 .video-modal-body video:-webkit-full-screen{
   object-fit: contain;
+}
+.video-modal:fullscreen,
+.video-modal:-webkit-full-screen,
+.video-modal.pseudo-fullscreen{
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+/* Fallback for browsers/in-app webviews that block the real
+   Fullscreen API outright — fills the viewport with CSS instead. */
+.video-modal.pseudo-fullscreen{
+  position: fixed;
+  inset: 0;
+  z-index: 300;
 }
 .video-modal-close{
   position: absolute;
