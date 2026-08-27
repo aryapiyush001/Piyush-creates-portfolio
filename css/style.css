@@ -1319,7 +1319,7 @@ body.resizing .main-nav{ transition: none !important; }
    clears the fixed back button instead of a header height. */
 .allwork-hero{
   position: relative;
-  padding: 96px 0 56px;
+  padding: 64px 0 56px;
   border-bottom: 1px solid var(--divider);
   overflow: hidden;
 }
@@ -1450,7 +1450,7 @@ body.resizing .main-nav{ transition: none !important; }
 .work-grid-5 .work-card:nth-child(5){ transition-delay: .24s; }
 
 @media (max-width: 700px){
-  .allwork-hero{ padding: 68px 0 30px; }
+  .allwork-hero{ padding: 44px 0 30px; }
   .allwork-hero h1{ font-size: 34px; margin-bottom: 12px; }
   .allwork-hero-desc{ line-height: 1.4; }
   .allwork-more-line{ line-height: 1.25; margin-top: 8px; }
