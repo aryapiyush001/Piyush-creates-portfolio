@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Piyush, Creates — Videographer · Cinematographer · Editor · Photographer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header" id="header">
+    <div class="container header-inner">
+      <a href="#top" class="logo"><span></span></a>
+
+      <nav class="main-nav" id="main-nav">
+        <a href="#top" class="active">Home</a>
+        <a href="#services">Work</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="header-socials">
+        <a href="https://www.instagram.com/piyush.creates?utm_source=ig_web_button_share_sheet&amp;igsi=ZDNlZDc0MzIxNw=="
+          target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true">
+            <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" stroke="currentColor" stroke-width="1.6" />
+            <circle cx="12" cy="12" r="4.6" stroke="currentColor" stroke-width="1.6" />
+            <circle cx="17.6" cy="6.4" r="1.15" fill="currentColor" />
+          </svg>
+        </a>
+      </div>
+
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="top">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="container hero-inner">
+      <div class="hero-content">
+        <p class="eyebrow hero-fade" style="transition-delay:.05s">Videographer &bull; Cinematographer &bull; Editor
+          &bull; Photographer</p>
+        <h1 class="hero-title hero-fade" style="transition-delay:.15s">
+          Piyush,<br>
+          <em>Creates</em>
+        </h1>
+        <p class="hero-sub hero-fade" style="transition-delay:.28s">I turn raw footage into<br>cinematic <em>visual
+            stories</em></p>
+        <p class="hero-desc hero-fade" style="transition-delay:.4s">Crafting immersive visual experiences that connect,
+          inspire and leave a lasting impact.</p>
+
+        <div class="hero-cta hero-fade" style="transition-delay:.5s">
+          <button class="btn btn-primary" id="watch-showreel">
+            <span class="play-icon">&#9658;</span> Watch Showreel
+          </button>
+          <a href="work.html" class="btn btn-secondary">View My Work <span class="arrow">&#8594;</span></a>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ===== PORTFOLIO / SHOWREEL ===== -->
+  <section class="portfolio-video" id="work">
+    <div class="container">
+      <div class="video-frame fade-up" id="video-frame">
+        <video id="showreel-video" class="showreel-video" src="assets/videos/intro_portfolio.mp4" playsinline loop muted
+          autoplay preload="auto"></video>
+
+        <div class="video-controls">
+          <button class="control-play" id="video-play" aria-label="Pause video">
+            <svg class="icon-play" width="14" height="14" viewBox="0 0 14 14" fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:none">
+              <path
+                d="M2 1.2C2 0.53 2.75 0.13 3.32 0.5L12.3 6.3C12.83 6.64 12.83 7.36 12.3 7.7L3.32 13.5C2.75 13.87 2 13.47 2 12.8V1.2Z" />
+            </svg>
+            <svg class="icon-pause" width="14" height="14" viewBox="0 0 14 14" fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="2" y="1" width="3.4" height="12" rx="0.8" />
+              <rect x="8.6" y="1" width="3.4" height="12" rx="0.8" />
+            </svg>
+          </button>
+          <span class="time" id="video-time">0:00 / 0:00</span>
+          <div class="progress-bar" id="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+            <div class="progress-handle" id="progress-handle"></div>
+          </div>
+          <button class="control-icon control-mute" id="video-mute" aria-label="Unmute">
+            <svg class="icon-volume" width="18" height="18" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:none">
+              <path d="M11 5L6 9H2v6h4l5 4V5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+              <path d="M15.5 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+              <path d="M18.5 5.5a9 9 0 0 1 0 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            </svg>
+            <svg class="icon-muted" width="18" height="18" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M11 5L6 9H2v6h4l5 4V5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+              <path d="M23 9l-6 6M17 9l6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button class="control-icon control-fullscreen" id="video-fullscreen" aria-label="Fullscreen">
+            <svg class="icon-expand" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <svg class="icon-compress" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:none">
+              <path d="M3 8h5V3M21 8h-5V3M3 16h5v5M21 16h-5v5" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STATS ===== -->
+  <section class="stats">
+    <div class="container">
+      <div class="stats-box">
+        <div class="stat fade-up">
+          <div class="stat-icon">
+            <svg width="30" height="30" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true">
+              <rect x="3" y="7" width="20" height="18" rx="2" stroke="#D4AF37" stroke-width="1.5" />
+              <path d="M11 13.2v7.6L17.5 17 11 13.2z" fill="#D4AF37" />
+              <path d="M25 11.5l4-2.5v14l-4-2.5V11.5z" stroke="#D4AF37" stroke-width="1.5" stroke-linejoin="round" />
+            </svg>
+          </div>
+          <div class="stat-num"><span class="counter" data-target="500">0</span>+</div>
+          <div class="stat-label">Projects Completed</div>
+          <p class="stat-desc">Delivering impactful visual stories worldwide.</p>
+        </div>
+        <div class="stat fade-up">
+          <div class="stat-icon">
+            <svg width="30" height="30" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true">
+              <circle cx="16" cy="16" r="12" stroke="#D4AF37" stroke-width="1.5" />
+              <path d="M16 8v8l5.5 3.5" stroke="#D4AF37" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </div>
+          <div class="stat-num"><span class="counter" data-target="3">0</span>+</div>
+          <div class="stat-label">Years of Experience</div>
+          <p class="stat-desc">Dedication. Passion. Consistency.</p>
+        </div>
+        <div class="stat fade-up">
+          <div class="stat-icon">
+            <svg width="30" height="30" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true">
+              <circle cx="16" cy="11" r="5" stroke="#D4AF37" stroke-width="1.5" />
+              <path d="M6.5 26.5C6.5 21.25 10.5 18 16 18s9.5 3.25 9.5 8.5" stroke="#D4AF37" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+          <div class="stat-num"><span class="counter" data-target="50">0</span>+</div>
+          <div class="stat-label">Happy Clients</div>
+          <p class="stat-desc">Building long-term relationships.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BRANDS ===== -->
+  <section class="brands">
+    <div class="container">
+      <div class="section-divider fade-up">
+        <span></span>
+        <p>Brands I've Worked With</p><span></span>
+      </div>
+      <div class="brands-grid fade-up" id="brands-grid">
+        <div class="brand brand-samsung">
+          <img src="assets/brands/samsung.webp" alt="Samsung" loading="lazy">
+        </div>
+        <div class="brand brand-lg">
+          <img src="assets/brands/nissan.webp" alt="Nissan" loading="lazy">
+        </div>
+        <div class="brand">
+          <img src="assets/brands/royal-enfield.webp" alt="Royal Enfield" loading="lazy">
+        </div>
+        <div class="brand brand-lg">
+          <img src="assets/brands/triumph.webp" alt="Triumph" loading="lazy">
+        </div>
+        <div class="brand">
+          <img src="assets/brands/reebok.webp" alt="Reebok" loading="lazy">
+        </div>
+        <div class="brand">
+          <img src="assets/brands/hm.webp" alt="H&amp;M" loading="lazy">
+        </div>
+        <div class="brand">
+          <img src="assets/brands/levis.webp" alt="Levi's" loading="lazy">
+        </div>
+        <div class="brand brand-lg">
+          <img src="assets/brands/johnnie-walker.webp" alt="Johnnie Walker" loading="lazy">
+        </div>
+        <div class="brand brand-jager">
+          <img src="assets/brands/jagermeister.webp" alt="Jägermeister" loading="lazy">
+        </div>
+        <div class="brand brand-lg">
+          <img src="assets/brands/corona-extra.webp" alt="Corona Extra" loading="lazy">
+        </div>
+        <div class="brand brand-xs">
+          <img src="assets/brands/vivo.webp" alt="vivo" loading="lazy">
+        </div>
+        <div class="brand brand-extra">
+          <img src="assets/brands/godrej.webp" alt="Godrej" loading="lazy">
+        </div>
+        <div class="brand brand-extra">
+          <img src="assets/brands/mac.webp" alt="M.A.C" loading="lazy">
+        </div>
+        <div class="brand brand-extra">
+          <img src="assets/brands/manyavar.webp" alt="Manyavar" loading="lazy">
+        </div>
+        <div class="brand brand-extra">
+          <img src="assets/brands/wild-stone.webp" alt="Wild Stone" loading="lazy">
+        </div>
+        <div class="brand brand-extra brand-sm">
+          <img src="assets/brands/dyson.webp" alt="Dyson" loading="lazy">
+        </div>
+        <div class="brand brand-extra brand-denver">
+          <img src="assets/brands/denver.jpg" alt="Denver" loading="lazy">
+        </div>
+        <button type="button" class="brand brand-more" id="brands-more" aria-expanded="false">+ MORE</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BEST WORK ===== -->
+  <section class="best-work" id="services">
+    <div class="container">
+      <div class="section-head fade-up">
+        <div>
+          <p class="eyebrow">Featured Work</p>
+          <h2>Best Work</h2>
+        </div>
+        <a href="work.html" class="btn btn-secondary">View All Work <span class="arrow">&#8594;</span></a>
+      </div>
+
+      <div class="work-grid">
+        <article class="work-card fade-up">
+          <div class="work-thumb thumb-1" data-video-id="cinematic-reel" tabindex="0" role="button"
+            aria-label="Play Jägermeister">
+            <img class="thumb-img" src="assets/thumbnails/best-work1.webp" alt="Jägermeister thumbnail" loading="lazy">
+            <video class="thumb-preview" muted loop playsinline preload="none" aria-hidden="true"></video>
+            <div class="thumb-overlay"></div>
+            <button class="work-play" aria-label="Play" tabindex="-1">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true">
+                <rect x="0.5" y="0.5" width="47" height="47" rx="23.5" stroke="currentColor" stroke-opacity="0.5" />
+                <path
+                  d="M30.6211 22.8821C31.0221 23.1555 31.2318 23.5292 31.25 24.0032C31.2318 24.4954 31.0221 24.86 30.6211 25.0969L22.7461 29.9094C22.3086 30.1829 21.8711 30.2011 21.4336 29.9641C20.9961 29.7089 20.7682 29.3261 20.75 28.8157V19.1907C20.7682 18.6803 20.9961 18.2975 21.4336 18.0422C21.8711 17.8053 22.3086 17.8144 22.7461 18.0696L30.6211 22.8821Z"
+                  fill="currentColor" />
+              </svg>
+            </button>
+          </div>
+          <h3>Jägermeister</h3>
+          <p>Bold pours, bigger moments</p>
+        </article>
+
+        <article class="work-card fade-up featured">
+          <div class="work-thumb thumb-2" data-video-id="behind-the-scenes" data-autoplay-preview="true" tabindex="0" role="button"
+            aria-label="Play Cafe UGC">
+            <video class="thumb-preview" muted loop playsinline preload="auto" aria-hidden="true"></video>
+            <div class="thumb-overlay"></div>
+            <button class="work-play" aria-label="Play" tabindex="-1">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true">
+                <rect x="0.5" y="0.5" width="47" height="47" rx="23.5" stroke="currentColor" stroke-opacity="0.5" />
+                <path
+                  d="M30.6211 22.8821C31.0221 23.1555 31.2318 23.5292 31.25 24.0032C31.2318 24.4954 31.0221 24.86 30.6211 25.0969L22.7461 29.9094C22.3086 30.1829 21.8711 30.2011 21.4336 29.9641C20.9961 29.7089 20.7682 29.3261 20.75 28.8157V19.1907C20.7682 18.6803 20.9961 18.2975 21.4336 18.0422C21.8711 17.8053 22.3086 17.8144 22.7461 18.0696L30.6211 22.8821Z"
+                  fill="currentColor" />
+              </svg>
+            </button>
+          </div>
+          <h3>Cafe UGC</h3>
+          <p>Everyday cravings, captured to convert</p>
+        </article>
+
+        <article class="work-card fade-up featured">
+          <div class="work-thumb thumb-3" data-video-id="automotive-showcase" data-autoplay-preview="true" tabindex="0" role="button"
+            aria-label="Play Creative UGC">
+            <video class="thumb-preview" muted loop playsinline preload="auto" aria-hidden="true"></video>
+            <div class="thumb-overlay"></div>
+            <button class="work-play" aria-label="Play" tabindex="-1">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true">
+                <rect x="0.5" y="0.5" width="47" height="47" rx="23.5" stroke="currentColor" stroke-opacity="0.5" />
+                <path
+                  d="M30.6211 22.8821C31.0221 23.1555 31.2318 23.5292 31.25 24.0032C31.2318 24.4954 31.0221 24.86 30.6211 25.0969L22.7461 29.9094C22.3086 30.1829 21.8711 30.2011 21.4336 29.9641C20.9961 29.7089 20.7682 29.3261 20.75 28.8157V19.1907C20.7682 18.6803 20.9961 18.2975 21.4336 18.0422C21.8711 17.8053 22.3086 17.8144 22.7461 18.0696L30.6211 22.8821Z"
+                  fill="currentColor" />
+              </svg>
+            </button>
+          </div>
+          <h3>Creative UGC</h3>
+          <p>Ideas brought to life with a human point of view</p>
+        </article>
+        <article class="work-card fade-up">
+  <div class="work-thumb thumb-4" data-video-id="product-film" tabindex="0" role="button"
+    aria-label="Play Watch Launch">
+    <img class="thumb-img" src="assets/thumbnails/best-work4.webp" alt="Watch Launch thumbnail" loading="lazy">
+    <video class="thumb-preview" muted loop playsinline preload="none" aria-hidden="true"></video>
+    <div class="thumb-overlay"></div>
+    <button class="work-play" aria-label="Play" tabindex="-1">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true">
+        <rect x="0.5" y="0.5" width="47" height="47" rx="23.5" stroke="currentColor" stroke-opacity="0.5" />
+        <path
+          d="M30.6211 22.8821C31.0221 23.1555 31.2318 23.5292 31.25 24.0032C31.2318 24.4954 31.0221 24.86 30.6211 25.0969L22.7461 29.9094C22.3086 30.1829 21.8711 30.2011 21.4336 29.9641C20.9961 29.7089 20.7682 29.3261 20.75 28.8157V19.1907C20.7682 18.6803 20.9961 18.2975 21.4336 18.0422C21.8711 17.8053 22.3086 17.8144 22.7461 18.0696L30.6211 22.8821Z"
+          fill="currentColor" />
+      </svg>
+    </button>
+  </div>
+  <h3>Watch Launch</h3>
+  <p>A new icon, revealed in motion</p>
+</article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT + WHAT I DO ===== -->
+  <section class="bottom-grid" id="about">
+    <div class="container">
+      <div class="section-divider about-section-divider fade-up">
+        <span></span>
+        <p>About Me</p><span></span>
+      </div>
+      <div class="about-col fade-up">
+        <div class="about-layout">
+          <div class="about-photo">
+            <img src="assets/images/profile/profile-pic.webp" alt="Piyush — cinematographer, editor &amp; photographer"
+              class="about-photo-img">
+            <div class="about-photo-overlay"></div>
+          </div>
+          <div class="about-content">
+            <h2 class="about-title">
+              Visual <em>storyteller</em><br>
+              with a passion<br>
+              for <em>details.</em>
+            </h2>
+            <p class="about-text">
+              I'm Piyush, a cinematographer, editor and photographer based in India. I love crafting visuals that evoke
+              emotion and create a lasting impact.
+            </p>
+            <a href="https://www.instagram.com/piyush.creates/" target="_blank" rel="noopener noreferrer"
+              class="btn btn-secondary about-instagram-btn">
+              Visit My IG Profile
+              <span class="arrow">→</span>
+            </a>
+          </div>
+          <div class="whatido-col">
+            <p class="eyebrow">What I Do</p>
+            <ul class="whatido-list">
+              <li><span class="wi-icon">&#127909;</span> Cinematography</li>
+              <li><span class="wi-icon">&#9986;</span> Editing</li>
+              <li><span class="wi-icon">&#128247;</span> Photography</li>
+              <li><span class="wi-icon">&#128226;</span> Video Marketing</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT / ENQUIRE ===== -->
+  <section class="contact-section" id="contact">
+    <div class="container">
+      <div class="section-divider fade-up">
+        <span></span>
+        <p>Enquire or Collaborate</p><span></span>
+      </div>
+      <div class="contact-col fade-up">
+        <form class="contact-form" id="contact-form" action="https://formsubmit.co/Piyusharya701@gmail.com"
+          method="POST">
+          <!-- FormSubmit options -->
+          <input type="hidden" name="_subject" value="New Collaboration Enquiry — Piyush, Creates Website">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_template" value="table">
+          <!-- Optional: redirect after success (uncomment & set your real URL if you want) -->
+          <!-- <input type="hidden" name="_next" value="https://your-domain.com/#contact"> -->
+
+          <input type="text" id="cf-name" name="name" placeholder="Your Name" required>
+          <input type="email" id="cf-email" name="email" placeholder="Email Address" required>
+          <textarea id="cf-message" name="message" placeholder="Your Message" rows="3" required></textarea>
+          <button type="submit" class="btn btn-primary btn-block">Send Message <span
+              class="arrow">&#8594;</span></button>
+        </form>
+        <div class="form-banner" id="form-banner" role="status" aria-live="polite">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true">
+            <circle cx="9" cy="9" r="9" fill="#2e7d4f" />
+            <path d="M5 9.3L7.7 12L13 6" stroke="#fff" stroke-width="1.6" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+          <span>Your request has been sent — I'll get back to you soon.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>&copy; <span id="footer-year"></span> Piyush, Creates. All rights reserved.</p>
+      <p class="footer-links">
+        <!-- <a href="#">Privacy Policy</a> &bull; <a href="#">Terms of Service</a> &bull; <a href="#">Site Map</a> -->
+      </p>
+      <p class="footer-love">Made with passion &#9825;</p>
+    </div>
+  </footer>
+
+  <!-- ===== VIDEO MODAL (shared by all Best Work cards) ===== -->
+  <div class="video-modal-overlay" id="video-modal-overlay" aria-hidden="true">
+    <div class="video-modal" role="dialog" aria-modal="true" aria-label="Video player">
+      <button class="video-modal-close" id="video-modal-close" aria-label="Close video">&times;</button>
+      <div class="video-modal-body" id="video-modal-body"></div>
+    </div>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+
+</html>
