@@ -380,7 +380,7 @@ em{ color: var(--gold); font-style: italic; }
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   color: #D4AF37;
 }
 .stat-icon svg{
@@ -389,7 +389,7 @@ em{ color: var(--gold); font-style: italic; }
   display: block;
 }
 .stat-num{ font-family: var(--font-display); font-size: 42px; font-weight:600; line-height: 1.05; }
-.stat-label{ font-size: var(--font-size-subheading); margin: 4px 0 14px; color: var(--text); }
+.stat-label{ font-size: var(--font-size-subheading); margin: 8px 0 14px; color: var(--text); }
 .stat-desc{ font-size: var(--font-size-subheading); color: var(--text-mute); margin:0; line-height:1.5; }
 
 /* =========================================================
@@ -1078,10 +1078,10 @@ body.resizing .main-nav{ transition: none !important; }
   .stats{ padding-bottom: 42px; }
   .stats-box{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .stat{ padding: 24px 8px; }
-  .stat-icon{ margin-bottom: 8px; }
+  .stat-icon{ margin-bottom: 4px; }
   .stat-icon svg{ width: 22px; height: 22px; }
   .stat-num{ font-size: 28px; }
-  .stat-label{ margin: 4px 0 10px; }
+  .stat-label{ margin: 8px 0 10px; }
   .stat-desc{ line-height: 1.35; }
   .brands{ padding: 12px 0 44px; }
   .section-divider{ gap: 10px; margin-bottom: 28px; }
@@ -1133,6 +1133,8 @@ body.resizing .main-nav{ transition: none !important; }
   .contact-col{ max-width: 100%; }
   .contact-form input,
   .contact-form textarea{ font-size: 16px; }
+  .contact-form input::placeholder,
+  .contact-form textarea::placeholder{ font-size: 13px; }
 }
 
 @media (max-width: 480px){
